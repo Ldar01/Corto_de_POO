@@ -9,20 +9,20 @@ package modelo;
  *
  * @author LN710Q
  */
-public class Filtro {
+public class Producto {
     
     private String nombre;
     private String codigo;
     private String tipo;
     
     private int cantidad;
-    private float precio;
+    private double precio;
     private boolean disponibilidad;
     
-    public Filtro() {
+    public Producto() {
     }
 
-    public Filtro(String nombre, String codigo, String tipo, int cantidad, float precio, boolean disponibilidad) {
+    public Producto(String nombre, String codigo, String tipo, int cantidad, double precio, boolean disponibilidad) {
         this.nombre = nombre;
         this.codigo = codigo;
         this.tipo = tipo;
@@ -31,20 +31,20 @@ public class Filtro {
         this.disponibilidad = disponibilidad;
     }
 
-    public Filtro(String nombre, String tipo, int cantidad, float precio) {
+    public Producto(String nombre, String tipo, int cantidad, double precio) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.cantidad = cantidad;
         this.precio = precio;
     }
 
-    public Filtro(String nombre, String codigo, String tipo) {
+    public Producto(String nombre, String codigo, String tipo) {
         this.nombre = nombre;
         this.codigo = codigo;
         this.tipo = tipo;
     }
 
-    public Filtro(String Codigo, String Nombre,String Tipo,boolean Disponibilidad, float Precio, int Cantidad){
+    public Producto(String Codigo, String Nombre,String Tipo,boolean Disponibilidad, double Precio, int Cantidad){
         this.codigo = Codigo;
         this.nombre = Nombre;
         this.tipo = Tipo;
@@ -52,6 +52,18 @@ public class Filtro {
         this.precio = Precio;
         this.cantidad = Cantidad;
     }
+    //cantidad = ?, precio =?
+
+    public Producto(String Codigo,int cantidad, double precio) {
+        this.codigo = Codigo;
+        this.cantidad = cantidad;
+        this.precio = precio;
+    }
+
+    public Producto(String codigo) {
+        this.codigo = codigo;
+    }
+    
     
     
 
@@ -63,11 +75,11 @@ public class Filtro {
         this.codigo = codigo;
     }
 
-    public float getPrecio() {
+    public double getPrecio() {
         return precio;
     }
 
-    public void setPrecio(float precio) {
+    public void setPrecio(double precio) {
         this.precio = precio;
     }
 
@@ -101,6 +113,11 @@ public class Filtro {
 
     public void setDisponibilidad(boolean disponibilidad) {
         this.disponibilidad = disponibilidad;
+    }
+
+    @Override
+    public String toString() {
+        return "Producto{" + "nombre=" + nombre + ", codigo=" + codigo + ", tipo=" + tipo + ", cantidad=" + cantidad + ", precio=" + precio + ", disponibilidad=" + disponibilidad + '}';
     }
 
     

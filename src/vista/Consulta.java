@@ -5,7 +5,7 @@
  */
 package vista;
 
-import dao.FiltroDao;
+import dao.ProductoDao;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,32 +22,33 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import modelo.Filtro;
+import modelo.Producto;
 
 /**
  *
  * @author LN710Q
  */
-public class Consulta extends JFrame{
+public class Consulta extends JFrame {
+
     public JLabel lblCodigo, lblPrecio, lblNombre, lblCantidad, lblTipo, lblDisponibilidad;
-    
+
     public JTextField codigo, precio, nombre, cantidad;
     public JComboBox tipo;
-    
-    ButtonGroup existencia = new ButtonGroup ();
+
+    ButtonGroup existencia = new ButtonGroup();
     public JRadioButton no;
     public JRadioButton si;
     public JTable resultados;
-    
+
     public JPanel table;
-    
+
     public JButton buscar, eliminar, insertar, limpiar, actualizar;
-    
+
     private static final int ANCHOC = 130, ALTOC = 30;
-    
+
     DefaultTableModel tm;
-    
-    public Consulta(){
+
+    public Consulta() {
         super("Inventario");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null);
@@ -74,27 +75,27 @@ public class Consulta extends JFrame{
         container.add(eliminar);
         container.add(limpiar);
         container.add(table);
-        setSize(600,600);
+        setSize(600, 600);
         eventos();
     }
-    
-    public final void agregarLabels(){
+
+    public final void agregarLabels() {
         lblCodigo = new JLabel("Codigo: ");
         lblPrecio = new JLabel("Precio: ");
         lblNombre = new JLabel("Nombre: ");
         lblCantidad = new JLabel("Cantidad: ");
         lblTipo = new JLabel("Tipo: ");
         lblDisponibilidad = new JLabel("Disponibilidad: ");
-        lblCodigo.setBounds(10,10, ANCHOC,ALTOC);
-        lblPrecio.setBounds(10,60, ANCHOC,ALTOC);
-        lblNombre.setBounds(10,100, ANCHOC,ALTOC);
-        lblCantidad.setBounds(10,140, ANCHOC,ALTOC);
-        lblTipo.setBounds(10,180, ANCHOC, ALTOC);
-        lblDisponibilidad.setBounds(10,240, ANCHOC, ALTOC);
-    
+        lblCodigo.setBounds(10, 10, ANCHOC, ALTOC);
+        lblPrecio.setBounds(10, 60, ANCHOC, ALTOC);
+        lblNombre.setBounds(10, 100, ANCHOC, ALTOC);
+        lblCantidad.setBounds(10, 140, ANCHOC, ALTOC);
+        lblTipo.setBounds(10, 180, ANCHOC, ALTOC);
+        lblDisponibilidad.setBounds(10, 240, ANCHOC, ALTOC);
+
     }
-    
-    public final void formulario(){
+
+    public final void formulario() {
         codigo = new JTextField();
         precio = new JTextField();
         tipo = new JComboBox();
@@ -108,18 +109,18 @@ public class Consulta extends JFrame{
         eliminar = new JButton("Eliminar");
         actualizar = new JButton("Actualizar");
         limpiar = new JButton("Limpiar");
-        
+
         table = new JPanel();
-        
+
         tipo.addItem("Fruta");
         tipo.addItem("Verdura");
         tipo.addItem("Bebida");
         tipo.addItem("Dulce");
-        
+
         existencia = new ButtonGroup();
         existencia.add(si);
         existencia.add(no);
-        
+
         codigo.setBounds(140, 10, ANCHOC, ALTOC);
         precio.setBounds(140, 60, ANCHOC, ALTOC);
         tipo.setBounds(140, 180, ANCHOC, ALTOC);
@@ -127,7 +128,7 @@ public class Consulta extends JFrame{
         cantidad.setBounds(140, 140, ANCHOC, ALTOC);
         si.setBounds(140, 240, 50, ALTOC);
         no.setBounds(210, 240, 50, ALTOC);
-        
+
         buscar.setBounds(300, 10, ANCHOC, ALTOC);
         insertar.setBounds(10, 310, ANCHOC, ALTOC);
         actualizar.setBounds(150, 310, ANCHOC, ALTOC);
@@ -137,11 +138,11 @@ public class Consulta extends JFrame{
         table.setBounds(10, 350, 500, 200);
         table.add(new JScrollPane(resultados));
     }
-    
-    public void llenarTabla(){
-        tm = new DefaultTableModel(){
-            public Class<?> getColumnClass(int column){
-                switch(column){
+
+    public void llenarTabla() {
+        tm = new DefaultTableModel() {
+            public Class<?> getColumnClass(int column) {
+                switch (column) {
                     case 0:
                         return String.class;
                     case 1:
@@ -153,133 +154,137 @@ public class Consulta extends JFrame{
                     case 4:
                         return Integer.class;
                     case 5:
-                        return Float.class;
+                        return Double.class;
                     default:
                         return Boolean.class;
                 }
             }
         };
-        
+
         tm.addColumn("Codigo");
         tm.addColumn("Nombre");
         tm.addColumn("Tipo");
         tm.addColumn("Disponibilidad");
         tm.addColumn("Precio");
         tm.addColumn("Cantidad");
-        
-        FiltroDao fd = new FiltroDao();
-        ArrayList<Filtro> filtros = fd.readAll();
-        
-        for(Filtro fi : filtros){
-            tm.addRow(new Object[]{fi.getCodigo(),fi.getNombre(),fi.getTipo(), fi.isDisponibilidad(),fi.getPrecio(),fi.getCantidad()});
+
+        ProductoDao fd = new ProductoDao();
+        ArrayList<Producto> filtros = fd.readAll();
+
+        for (Producto fi : filtros) {
+            tm.addRow(new Object[]{fi.getCodigo(), fi.getNombre(), fi.getTipo(), fi.isDisponibilidad(), fi.getPrecio(), fi.getCantidad()});
         }
         resultados.setModel(tm);
     }
-    
-    public void eventos(){
-        insertar.addActionListener(new ActionListener(){
+
+    public void eventos() {
+        insertar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FiltroDao fd = new FiltroDao();
-                Filtro f = new Filtro(codigo.getText(),nombre.getText(), tipo.getSelectedItem().toString(),true,Float.parseFloat(precio.getText()), Integer.parseInt(cantidad.getText()));
-                
-                if(no.isSelected()){
+                ProductoDao fd = new ProductoDao();
+                Producto f = new Producto(codigo.getText(), nombre.getText(), tipo.getSelectedItem().toString(), true, Double.parseDouble(precio.getText()), Integer.parseInt(cantidad.getText()));
+
+                if (no.isSelected()) {
                     f.setDisponibilidad(false);
                 }
-                
-                if(fd.create(f)){
+
+                if (fd.create(f)) {
                     JOptionPane.showMessageDialog(null, "Filtro registrado con exito");
                     limpiarCampos();
                     llenarTabla();
-                } else{
-                    JOptionPane.showMessageDialog(null,"Ocurrio un problema al momento de crear el filtro");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ocurrio un problema al momento de crear el filtro");
                 }
-                
+
             }
-            
+
         });
-        
-        actualizar.addActionListener(new ActionListener(){
+
+        actualizar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FiltroDao fd = new FiltroDao();
-                Filtro f = new Filtro();
-                
-                if(no.isSelected()){
+                ProductoDao fd = new ProductoDao();
+                Producto f = new Producto(codigo.getText(), Integer.parseInt(cantidad.getText()), Double.parseDouble(precio.getText()));
+
+                if (no.isSelected()) {
                     f.setDisponibilidad(false);
                 }
-                
-                if(fd.update(f)){
+
+                if (fd.update(f)) {
                     JOptionPane.showMessageDialog(null, "Filtro modificado con exito");
                     limpiarCampos();
                     llenarTabla();
-                } else{
-                    JOptionPane.showMessageDialog(null,"Ocurrio un problema al momento de modificar el filtro");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ocurrio un problema al momento de modificar el filtro");
                 }
-                
+
             }
-            
+
         });
-        
-        eliminar.addActionListener( new ActionListener(){
+
+        eliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FiltroDao fd = new FiltroDao();
-                                
-                if(fd.delete(codigo.getText())){
-                    JOptionPane.showMessageDialog(null, "Filtro eliminado con exito");
+                ProductoDao fd = new ProductoDao();
+
+                if (fd.delete(codigo.getText())) {
+                    JOptionPane.showMessageDialog(null, "Producto eliminado con exito");
                     limpiarCampos();
                     llenarTabla();
-                } else{
-                    JOptionPane.showMessageDialog(null,"Ocurrio un problema al momento de eliminar el filtro");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ocurrio un problema al momento de eliminar el producto");
                 }
-                
+
             }
-            
+
         });
-        
-        buscar.addActionListener(new ActionListener(){
+
+        buscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FiltroDao fd = new FiltroDao();
-                Filtro f = fd.read(codigo.getText());
-                
-                if(f == null){
-                    JOptionPane.showMessageDialog(null, "El filtro buscado no se ha encontrado");
-                }
-                else{
+                ProductoDao fd = new ProductoDao();
+                Producto f = fd.read(codigo.getText());
+
+                if (f == null) {
+                    JOptionPane.showMessageDialog(null, "El producto buscado no se ha encontrado");
+                } else {
+                    System.out.println(f);
                     codigo.setText(f.getCodigo());
-                    tipo.setSelectedItem(f.getTipo());
+                    //tipo.setSelectedItem(f.getTipo());
                     nombre.setText(f.getNombre());
-                    
-                    if(f.isDisponibilidad()){
+                    cantidad.setText(String.valueOf(f.getCantidad()));
+
+                    if (f.isDisponibilidad()) {
                         si.setSelected(true);
-                    } else{
+                    } else {
                         no.setSelected(true);
                     }
                 }
-                
+
             }
-            
+
         });
-        
-        limpiar.addActionListener( new ActionListener(){
+
+        limpiar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 limpiarCampos();
             }
         });
-        
+
     }
-    
-    public void limpiarCampos(){
+
+    public void limpiarCampos() {
         codigo.setText("");
+        precio.setText("");
+        cantidad.setText("");
         tipo.setSelectedItem("Fruta");
         nombre.setText("");
+        no.setSelected(true);
     }
-    
-    public static void main(String[] args){
-        java.awt.EventQueue.invokeLater( new Runnable() {
+
+    public static void main(String[] args) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 new Consulta().setVisible(true);

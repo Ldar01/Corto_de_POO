@@ -14,28 +14,28 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import modelo.Filtro;
+import modelo.Producto;
 
 /**
  *
  * @author LN710Q
  */
-public class FiltroDao  implements metodos <Filtro>{
+public class ProductoDao  implements metodos <Producto>{
     private static final Conexion con = Conexion.conectar();
-    private static final String SQL_INSERT = "INSERT INTO productos(codigo, precio, nombre, cantidad, tipo) VALUES (?,?,?,?,?)";
-    private static final String SQL_UPDATE = "UPDATE productos SET marca = ?, stock =?, existencia = ?, WHERE codFiltro=?";
-    private static final String SQL_DELETE = "DELETE FROM productos WHERE codFiltro = ?";
-    private static final String SQL_READ = "SELECT * FROM productos WHERE codFiltro =?";
+    private static final String SQL_INSERT = "INSERT INTO productos(codigo, nombre, tipo, precio, cantidad) VALUES (?,?,?,?,?)";
+    private static final String SQL_UPDATE = "UPDATE productos SET cantidad = ?, precio =? WHERE codigo=?";
+    private static final String SQL_DELETE = "DELETE FROM productos WHERE codigo = ?";
+    private static final String SQL_READ = "SELECT * FROM productos WHERE codigo =?";
     private static final String SQL_READALL = "SELECT * FROM productos";
     @Override
-    public boolean create(Filtro g) {
+    public boolean create(Producto g) {
         PreparedStatement ps;
         try{
             ps = con.getCnx().prepareStatement(SQL_INSERT);
             ps.setString(1, g.getCodigo());
             ps.setString(2, g.getNombre());
             ps.setString(3, g.getTipo());
-            ps.setFloat(4, g.getPrecio());
+            ps.setDouble(4, g.getPrecio());
             ps.setInt(5, g.getCantidad());
             
             
@@ -44,7 +44,7 @@ public class FiltroDao  implements metodos <Filtro>{
             }
         }catch(SQLException ex){
             System.err.println(ex.getMessage());
-            Logger.getLogger(FiltroDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProductoDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         finally{
             con.cerrarConexion();
@@ -64,7 +64,7 @@ public class FiltroDao  implements metodos <Filtro>{
             }
         }catch (SQLException ex){
             System.out.println(ex.getMessage());
-            Logger.getLogger(FiltroDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProductoDao.class.getName()).log(Level.SEVERE, null, ex);
         } finally{
             con.cerrarConexion();
         }
@@ -72,23 +72,26 @@ public class FiltroDao  implements metodos <Filtro>{
     }
 
     @Override
-    public boolean update(Filtro c) {
+    public boolean update(Producto c) {
         PreparedStatement ps;
         try{
             System.out.println(c.getCodigo());
             ps = con.getCnx().prepareStatement(SQL_UPDATE);
             
-            ps.setString(1, c.getNombre());
-            ps.setFloat(2, c.getPrecio());
-            ps.setInt(3, c.getCantidad());
-            ps.setString(4, c.getCodigo());
+            //ps.setString(1, c.getNombre());
+            
+            ps.setInt(1, c.getCantidad());
+            ps.setDouble(2, c.getPrecio());
+            ps.setString(3, c.getCodigo());
+            
+            
             
             if(ps.executeUpdate() >0){
                 return true;
             }
         }catch(SQLException ex){
             System.out.println(ex.getMessage());
-            Logger.getLogger(FiltroDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProductoDao.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
             con.cerrarConexion();
         }
@@ -96,8 +99,8 @@ public class FiltroDao  implements metodos <Filtro>{
     }
 
     @Override
-    public Filtro read(Object key) {
-        Filtro f = null;
+    public Producto read(Object key) {
+        Producto f = null;
         PreparedStatement ps;
         ResultSet rs;
         
@@ -108,12 +111,13 @@ public class FiltroDao  implements metodos <Filtro>{
             rs = ps.executeQuery();
             
             while(rs.next()){
-                f = new Filtro(rs.getString(1), rs.getString(2), rs.getString(3));
+                //String Codigo, String Nombre,String Tipo,boolean Disponibilidad, float Precio, int Cantidad
+                f = new Producto(rs.getString(3), rs.getString(2), rs.getString(4),rs.getBoolean(7), rs.getFloat(6),rs.getInt(5));
             }
             rs.close();
         }catch (SQLException ex){
             System.out.println(ex.getMessage());
-            Logger.getLogger(FiltroDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProductoDao.class.getName()).log(Level.SEVERE, null, ex);
         } finally{
             con.cerrarConexion();
         }
@@ -121,8 +125,8 @@ public class FiltroDao  implements metodos <Filtro>{
     }
 
     @Override
-    public ArrayList<Filtro> readAll() {
-        ArrayList<Filtro> all = new ArrayList();
+    public ArrayList<Producto> readAll() {
+        ArrayList<Producto> all = new ArrayList();
         Statement s;
         ResultSet rs;
         
@@ -131,12 +135,12 @@ public class FiltroDao  implements metodos <Filtro>{
             rs = s.executeQuery(SQL_READALL);
             
             while(rs.next()){
-                all.add(new Filtro(rs.getString(3), rs.getString(2), rs.getString(4),rs.getBoolean(7), rs.getFloat(6),rs.getInt(5)));
+                all.add(new Producto(rs.getString(3), rs.getString(2), rs.getString(4),rs.getBoolean(7), rs.getDouble(6),rs.getInt(5)));
             }
             rs.close();
         }
         catch (SQLException ex){
-            Logger.getLogger(FiltroDao.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ProductoDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return all;
     }
